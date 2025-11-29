@@ -5,7 +5,7 @@ from datetime import datetime
 with DAG(
     'finale',
     start_date=datetime(2024, 1, 1),
-    schedule_interval=None,
+    schedule=None,
     catchup=False,
 ) as dag:
 
