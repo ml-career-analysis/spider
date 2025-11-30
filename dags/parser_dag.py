@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append("/opt/airflow/dags")
+
 import arxivscraper
 from airflow import DAG
 from airflow.operators.python import PythonOperator
