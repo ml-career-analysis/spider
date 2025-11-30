@@ -20,11 +20,11 @@ date_start = '2025-11-20'
 date_end = '2025-11-30'
 
 def fetch_metadata(ti, category, date_start, date_end):
-
+    print("test")
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
     output = scraper.scrape()
     df = pd.DataFrame(output)
-
+    print("test2")
     df = df[["id", "title", "abstract", "categories", "created", "authors"]]
 
     df = df.rename(columns={"created": "published"})
@@ -33,6 +33,7 @@ def fetch_metadata(ti, category, date_start, date_end):
 
     filename = f"{DATAFRAMES_PATH}/test.csv"
     df.to_csv(filename, index=False)
+    print("test3")
     return filename
 
 with DAG(
