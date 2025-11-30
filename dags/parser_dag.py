@@ -19,6 +19,9 @@ category = "cs"
 date_start = '2025-11-20'
 date_end = '2025-11-30'
 
+def create_dataframes_dir():
+    os.makedirs("/opt/airflow/dags/dataframes", exist_ok=True)
+
 def fetch_metadata(ti, category, date_start, date_end):
     print("test")
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
@@ -44,7 +47,11 @@ with DAG(
     tags=["arxiv"],
     catchup=False, 
 ) as dag:
-    
+    create_dir = PythonOperator(
+        task_id="create_dataframes_dir",
+        python_callable=create_dataframes_dir,
+        dag=dag,
+    )
     fetch = PythonOperator(
         task_id = "fetch_arxiv_metadata",
         python_callable = fetch_metadata,
@@ -67,6 +74,6 @@ with DAG(
             "update_cols": ["id"],
         }
     )
-    fetch >> insert
+    create_dir >> fetch >> insert
 
 
