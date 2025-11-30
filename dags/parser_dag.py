@@ -45,8 +45,6 @@ with DAG(
     start_date=datetime(2025,11,10),
     schedule="@once",
     tags=["arxiv"],
-    concurrency=1,
-    max_active_runs=1,
     catchup=False, 
 ) as dag:
     create_dir = PythonOperator(
