@@ -3,12 +3,12 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import pandas as pd
-from .base_settings.base import (
+from base_settings.base import (
     DATAFRAMES_PATH,
     default_args,
     databaseConns
 )
-from .base_settings.insert_database_func import push_df_to_db
+from base_settings.insert_database_func import push_df_to_db
 
 category = "cs"
 date_start = '2025-11-20'
