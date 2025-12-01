@@ -15,6 +15,7 @@ default_args = {
 databaseConns = {
     "master": {
         "postgres_conn_id": "arxiv",
-        "schema": "arxivdb",
+        "schema": "public",
     }
 }
+
