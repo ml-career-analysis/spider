@@ -20,7 +20,7 @@ category = "cs"
 # date_end = '2025-11-19'
 
 date_start = datetime.today().strftime('%Y-%m-%d')
-date_end = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+date_end = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
 
 def fetch_metadata(ti, category, date_start, date_end):
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
