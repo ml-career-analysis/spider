@@ -1,4 +1,4 @@
-mport arxivscraper
+import arxivscraper
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
@@ -11,16 +11,16 @@ from base_settings.base import (
     default_args,
     databaseConns
 )
-#from base_settings.insert_database_func import push_df_to_db
-from base_settings.upgraded_postgreshook import update_table, push_df_to_db
+from base_settings.upgraded_postgreshook import  push_df_to_db
+
 REQUEST_SLEEP = 2
 BATCH = 20
 category = "cs"
-date_start = '2025-11-18'
-date_end = '2025-11-19'
+# date_start = '2025-11-18'
+# date_end = '2025-11-19'
 
-#date_start = datetime.today().strftime('%Y-%m-%d')
-#date_end = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+date_start = datetime.today().strftime('%Y-%m-%d')
+date_end = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
 def fetch_metadata(ti, category, date_start, date_end):
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
@@ -38,7 +38,7 @@ def fetch_metadata(ti, category, date_start, date_end):
     df[df['id'].notna() & (df['id'] != '')]
     filename = f"{DATAFRAMES_PATH}/test.csv"
     df.to_csv(filename, index=False)
-    #return df
+
     return filename
 
 
@@ -107,3 +107,4 @@ with DAG(
         }
     )
     fetch_scraper >> fetch_arxiv >> insert
+
