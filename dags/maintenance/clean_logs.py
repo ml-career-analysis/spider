@@ -51,7 +51,7 @@ def delete_log_dir(log_dir):
 with DAG(
     dag_id="airflow_log_cleanup",
     start_date=datetime(2025, 11, 10),
-    schedule_interval="@once",
+    schedule_interval="0 1 * * *",
     default_args=default_args,
     max_active_runs=1,
     catchup=False,

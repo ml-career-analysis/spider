@@ -9,7 +9,7 @@ with DAG(
     dag_id="airflow_dataframes_cleanup",
     default_args=default_args,
     start_date=datetime(2025,11,10),
-    schedule="@once",
+    schedule="0 1 * * *",
     tags=["airflow_maintenance"],
     catchup=False, 
 ) as dag:

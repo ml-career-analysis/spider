@@ -6,6 +6,7 @@ with DAG(
     'git_pull_testi4',
     start_date=datetime(2024, 1, 1),
     schedule=None,
+    tags=['test_dag'],
     catchup=False,
 ) as dag:
 
