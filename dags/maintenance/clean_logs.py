@@ -56,7 +56,6 @@ with DAG(
     max_active_runs=1,
     catchup=False,
     tags=["airflow_maintenance"],
-    doc_md=doc_md_DAG,
 ) as dag:
     log_scheduler_cleanup_op = PythonOperator(
         task_id="delete_old_logs_scheduler", python_callable=delete_scheduler_logs
