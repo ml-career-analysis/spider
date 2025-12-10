@@ -21,6 +21,5 @@ jobs:
           script: |
             set -euo pipefail
             cd /opt/airflow_final/spider-collector
-#            export GIT_SSH_COMMAND='ssh -i /opt/airflow_final/ssh/id_ed25519 -o IdentitiesOnly=yes'
             git pull
 
