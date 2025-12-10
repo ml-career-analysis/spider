@@ -7,7 +7,7 @@ on:
         branches: ["main"]
 jobs:
     run_pull:
-        runs_on: ubuntu-latest
+        runs-on: ubuntu-latest
 
         steps:
             name: pull on remote test
