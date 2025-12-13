@@ -74,6 +74,18 @@ date_end = '2025-11-19'
 #        return ""
 
 def fetch_metadata(ti, category, date_start, date_end):
+    scraper = arxivscraper.Scraper(
+        category=category,
+        date_from=date_start,
+        date_until=date_end
+    )
+
+    url = scraper.url
+    print("ARXIV URL:", url)
+
+    r = requests.get(url, timeout=30)
+    print("RAW RESPONSE (first 500 chars):")
+    print(r.text[:500])
     scraper = arxivscraper.Scraper(category='cs', date_from='2025-11-18', date_until='2025-11-19')
     #scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
 #    ouput = []
