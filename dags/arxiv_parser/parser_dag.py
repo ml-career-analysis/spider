@@ -22,11 +22,11 @@ from bs4 import BeautifulSoup
 REQUEST_SLEEP = 2
 BATCH = 20
 category = "cs"
-# date_start = '2025-11-18'
-# date_end = '2025-11-19'
+date_start = '2025-11-18'
+date_end = '2025-11-19'
 
-date_end = datetime.today().strftime('%Y-%m-%d')
-date_start = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
+#date_end = datetime.today().strftime('%Y-%m-%d')
+#date_start = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
 
 def clean_pdf_text(pdf_url, arxiv_id="paper"):
     try:
@@ -75,14 +75,14 @@ def clean_pdf_text(pdf_url, arxiv_id="paper"):
 
 def fetch_metadata(ti, category, date_start, date_end):
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
-    ouput = []
-    for item in scraper.scrape():
-        try:
-            output.append(item)
-        except ET.ParseError:
-            print('fuck')
+#    ouput = []
+#    for item in scraper.scrape():
+#        try:
+#            output.append(item)
+#        except ET.ParseError:
+#            print('fuck')
 
-#    output = scraper.scrape()
+    output = scraper.scrape()
     print(output)
     df = pd.DataFrame(output)
     df = df[["id", "title", "abstract", "categories", "created", "authors"]]
