@@ -12,6 +12,9 @@ from base_settings.base import (
     databaseConns
 )
 from base_settings.upgraded_postgreshook import  push_df_to_db
+import request
+from bs4 import BeautifulSoup
+import fitz
 
 GROBID_URL = "http://localhost:8070/api/processFulltextDocument"
 
@@ -23,7 +26,7 @@ category = "cs"
 # date_end = '2025-11-19'
 
 date_end = datetime.today().strftime('%Y-%m-%d')
-date_start = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
+date_start = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
 def clean_pdf_text(pdf_url, arxiv_id="paper"):
     try:
