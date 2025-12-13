@@ -16,7 +16,7 @@ import requests
 from bs4 import BeautifulSoup
 #import fitz
 
-GROBID_URL = "http://localhost:8070/api/processFulltextDocument"
+#GROBID_URL = "http://localhost:8070/api/processFulltextDocument"
 
 # workflow test
 REQUEST_SLEEP = 2
@@ -76,6 +76,7 @@ def clean_pdf_text(pdf_url, arxiv_id="paper"):
 def fetch_metadata(ti, category, date_start, date_end):
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
     output = scraper.scrape()
+    print(output)
     df = pd.DataFrame(output)
     df = df[["id", "title", "abstract", "categories", "created", "authors"]]
 
