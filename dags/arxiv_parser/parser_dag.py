@@ -75,7 +75,14 @@ def clean_pdf_text(pdf_url, arxiv_id="paper"):
 
 def fetch_metadata(ti, category, date_start, date_end):
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
-    output = scraper.scrape()
+    ouput = []
+    for item in scraper.scrape():
+        try:
+            output.append(item)
+        except ET.ParseError:
+            print('fuck')
+
+#    output = scraper.scrape()
     print(output)
     df = pd.DataFrame(output)
     df = df[["id", "title", "abstract", "categories", "created", "authors"]]
