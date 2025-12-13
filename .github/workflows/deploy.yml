@@ -1,0 +1,27 @@
+name: Deploy test
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  run_pull:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: pull on remote test
+        uses: appleboy/ssh-action@v1.0.3
+        continue-on-error: true
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -euo pipefail
+            export GIT_SSH_COMMAND='ssh -i /opt/airflow_final/ssh/id_ed25519 -o IdentitiesOnly=yes'
+            cd /opt/airflow_final/spider-collector
+            git pull
+

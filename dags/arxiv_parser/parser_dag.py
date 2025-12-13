@@ -15,6 +15,7 @@ from base_settings.upgraded_postgreshook import  push_df_to_db
 
 GROBID_URL = "http://localhost:8070/api/processFulltextDocument"
 
+# workflow test
 REQUEST_SLEEP = 2
 BATCH = 20
 category = "cs"

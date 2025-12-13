@@ -1,0 +1,6 @@
+arxivscraper
+pandas
+arxiv
+requests
+fitz
+beautifulsoup4
