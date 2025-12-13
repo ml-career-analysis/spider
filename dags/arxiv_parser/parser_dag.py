@@ -153,18 +153,18 @@ with DAG(
             "key_xcom": "return_value",
         }
     )
-    insert = PythonOperator(
-        task_id = 'insert_arxiv_metadata',
-        python_callable=push_df_to_db,
-        op_kwargs={
-            "task_id_xcom": "fetch_arxiv_metadata",
-            "key_xcom": "return_value",
-            "table_name": "articles",
-            "update_cols": ["title", "abstract", "categories", "published", "authors"],
-            "conn_id": databaseConns["master"]["postgres_conn_id"],
-            "schema_name": databaseConns["master"]["schema"],
-            "index_cols": ["id"],
-        }
-    )
+#    insert = PythonOperator(
+#        task_id = 'insert_arxiv_metadata',
+#        python_callable=push_df_to_db,
+#        op_kwargs={
+#            "task_id_xcom": "fetch_arxiv_metadata",
+#            "key_xcom": "return_value",
+#            "table_name": "articles",
+#            "update_cols": ["title", "abstract", "categories", "published", "authors"],
+#            "conn_id": databaseConns["master"]["postgres_conn_id"],
+#            "schema_name": databaseConns["master"]["schema"],
+#            "index_cols": ["id"],
+#        }
+#    )
     fetch_scraper >> fetch_arxiv >> test #insert
 
