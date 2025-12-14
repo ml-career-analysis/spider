@@ -13,81 +13,81 @@ from base_settings.base import (
 )
 from base_settings.upgraded_postgreshook import  push_df_to_db
 import requests
-#from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 #import fitz
 
-#GROBID_URL = "http://localhost:8070/api/processFulltextDocument"
+GROBID_URL = "http://localhost:8070/api/processFulltextDocument"
 
 # workflow test
 REQUEST_SLEEP = 2
 BATCH = 20
 category = "cs"
-date_start = '2025-11-18'
-date_end = '2025-11-19'
+#date_start = '2025-11-18'
+#date_end = '2025-11-19'
 
-#date_end = datetime.today().strftime('%Y-%m-%d')
-#date_start = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
+date_end = datetime.today().strftime('%Y-%m-%d')
+date_start = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
 
-#def clean_pdf_text(pdf_url, arxiv_id="paper"):
-#    try:
-#        print(f"[{arxiv_id}] Загрузка пидиди")
-#        r = requests.get(pdf_url, timeout=10)
-#        pdf_bytes = r.content
-#
-#        print(f"[{arxiv_id}] Ссылка в гробик")
-#        files = {"input": (f"{arxiv_id}.pdf", pdf_bytes, "application/pdf")}
-#        r2 = requests.post(GROBID_URL, files=files, timeout=60)
-#        if r2.status_code != 200:
-#            print(f"[{arxiv_id}] GROBID returned status {r2.status_code}")
-#            return ""
-#
-#        print(f"[{arxiv_id}] Рассмотр xml")
-#        soup = BeautifulSoup(r2.text, "lxml")
-#        for tag in soup.find_all([
-#            "abstract","formula","inline-formula","figure","table",
-#            "ref","biblStruct","title","author","persName","affiliation",
-#            "editor","idno"
-#        ]):
-#            tag.decompose()
-#
-#        body = soup.find("body")
-#        if not body:
-#            print(f"[{arxiv_id}] Плохо спарсился")
-#            return ""
-#
-#        print(f"[{arxiv_id}] Извлечение")
-#        texts = []
-#        for div in body.find_all("div"):
-#            if div.get("type") == "references":
-#                continue
-#            for t in div.find_all(["figure","table","formula","ref","biblStruct"]):
-#                t.decompose()
-#            text = div.get_text(separator=" ", strip=True)
-#            if text:
-#                texts.append(text)
-#
-#        clean_text = " ".join(texts)
-#        return clean_text
-#
-#    except Exception as e:
-#        print(f"[{arxiv_id}] Абоба {e}")
-#        return ""
+def clean_pdf_text(pdf_url, arxiv_id="paper"):
+    try:
+        print(f"[{arxiv_id}] Загрузка пидиди")
+        r = requests.get(pdf_url, timeout=10)
+        pdf_bytes = r.content
+
+        print(f"[{arxiv_id}] Ссылка в гробик")
+        files = {"input": (f"{arxiv_id}.pdf", pdf_bytes, "application/pdf")}
+        r2 = requests.post(GROBID_URL, files=files, timeout=60)
+        if r2.status_code != 200:
+            print(f"[{arxiv_id}] GROBID returned status {r2.status_code}")
+            return ""
+
+        print(f"[{arxiv_id}] Рассмотр xml")
+        soup = BeautifulSoup(r2.text, "lxml")
+        for tag in soup.find_all([
+            "abstract","formula","inline-formula","figure","table",
+            "ref","biblStruct","title","author","persName","affiliation",
+            "editor","idno"
+        ]):
+            tag.decompose()
+
+        body = soup.find("body")
+        if not body:
+            print(f"[{arxiv_id}] Плохо спарсился")
+            return ""
+
+        print(f"[{arxiv_id}] Извлечение")
+        texts = []
+        for div in body.find_all("div"):
+            if div.get("type") == "references":
+                continue
+            for t in div.find_all(["figure","table","formula","ref","biblStruct"]):
+                t.decompose()
+            text = div.get_text(separator=" ", strip=True)
+            if text:
+                texts.append(text)
+
+        clean_text = " ".join(texts)
+        return clean_text
+
+    except Exception as e:
+        print(f"[{arxiv_id}] Абоба {e}")
+        return ""
 
 def fetch_metadata(ti, category, date_start, date_end):
-    scraper = arxivscraper.Scraper(
-        category=category,
-        date_from=date_start,
-        date_until=date_end
-    )
-
-    url = scraper.url
-    print("ARXIV URL:", url)
-
-    r = requests.get(url, timeout=30)
-    print("RAW RESPONSE (first 500 chars):")
-    print(r.text[:500])
-    scraper = arxivscraper.Scraper(category='cs', date_from='2025-11-18', date_until='2025-11-19')
-    #scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
+#    scraper = arxivscraper.Scraper(
+#        category=category,
+#        date_from=date_start,
+#        date_until=date_end
+#    )
+#
+#    url = scraper.url
+#    print("ARXIV URL:", url)
+#
+#    r = requests.get(url, timeout=30)
+#    print("RAW RESPONSE (first 500 chars):")
+#    print(r.text[:500])
+#    scraper = arxivscraper.Scraper(category='cs', date_from='2025-11-18', date_until='2025-11-19')
+    scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
 #    ouput = []
 #    for item in scraper.scrape():
 #        try:
@@ -137,11 +137,11 @@ def fetch_arxiv_metadata(ti, task_id_xcom, key_xcom, batch_size):
     df.to_csv(filename, index=False)
     return filename
 
-#def test(ti, task_id_xcom, key_xcom):
-#    filename = ti.xcom_pull(task_ids=task_id_xcom, key=key_xcom)
-#    df = pd.read_csv(filename)
-#    df["clean_text"] = df.apply(lambda row: clean_pdf_text(row["pdf_url"], row["id"]), axis=1)
-#    return 'done'
+def test(ti, task_id_xcom, key_xcom):
+    filename = ti.xcom_pull(task_ids=task_id_xcom, key=key_xcom)
+    df = pd.read_csv(filename)
+    df["clean_text"] = df.apply(lambda row: clean_pdf_text(row["pdf_url"], row["id"]), axis=1)
+    return 'done'
 
 with DAG(
     dag_id = "parser_test",
@@ -169,14 +169,14 @@ with DAG(
             "batch_size": BATCH,
         }
     )
-#    test = PythonOperator(
-#        task_id='clean_text',
-#        python_callable=test,
-#        op_kwargs={
-#            "task_id_xcom": "fetch_arxiv_metadata",
-#            "key_xcom": "return_value",
-#        }
-#    )
+    test = PythonOperator(
+        task_id='clean_text',
+        python_callable=test,
+        op_kwargs={
+            "task_id_xcom": "fetch_arxiv_metadata",
+            "key_xcom": "return_value",
+        }
+    )
 #    insert = PythonOperator(
 #        task_id = 'insert_arxiv_metadata',
 #        python_callable=push_df_to_db,
@@ -190,5 +190,5 @@ with DAG(
 #            "index_cols": ["id"],
 #        }
 #    )
-    fetch_scraper >> fetch_arxiv # >> test insert
+    fetch_scraper >> fetch_arxiv >> test # insert
 
