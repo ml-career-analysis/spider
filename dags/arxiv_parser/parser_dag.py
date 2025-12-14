@@ -15,6 +15,7 @@ from base_settings.upgraded_postgreshook import  push_df_to_db
 import requests
 from bs4 import BeautifulSoup
 import fitz
+import re
 
 GROBID_URL = "http://grobid:8070/api/processFulltextDocument"
 
