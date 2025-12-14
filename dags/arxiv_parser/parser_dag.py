@@ -26,7 +26,7 @@ category = "cs"
 #date_end = '2025-11-19'
 
 date_end = datetime.today().strftime('%Y-%m-%d')
-date_start = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
+date_start = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
 def clean_pdf_text(pdf_url, arxiv_id="paper"):
     try:
