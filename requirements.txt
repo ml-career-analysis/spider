@@ -2,5 +2,5 @@ arxivscraper
 pandas
 arxiv
 requests
-fitz
+PyMuPDF
 beautifulsoup4
