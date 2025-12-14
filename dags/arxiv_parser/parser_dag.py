@@ -26,6 +26,7 @@ HEADINGS = [
 PATTERN = re.compile(r"\b\d{4}\.\d{5}(?:v\d+)?\b")
 
 # workflow test
+TIMEOUT = 30
 REQUEST_SLEEP = 2
 BATCH = 20
 category = "cs"
