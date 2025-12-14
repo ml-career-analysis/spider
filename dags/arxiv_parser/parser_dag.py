@@ -115,26 +115,7 @@ def clean_pdf_text(pdf_url, arxiv_id="paper"):
         return ""
 
 def fetch_metadata(ti, category, date_start, date_end):
-#    scraper = arxivscraper.Scraper(
-#        category=category,
-#        date_from=date_start,
-#        date_until=date_end
-#    )
-#
-#    url = scraper.url
-#    print("ARXIV URL:", url)
-#
-#    r = requests.get(url, timeout=30)
-#    print("RAW RESPONSE (first 500 chars):")
-#    print(r.text[:500])
-#    scraper = arxivscraper.Scraper(category='cs', date_from='2025-11-18', date_until='2025-11-19')
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
-#    ouput = []
-#    for item in scraper.scrape():
-#        try:
-#            output.append(item)
-#        except ET.ParseError:
-#            print('fuck')
 
     output = scraper.scrape()
     print(output)
@@ -183,6 +164,9 @@ def test(ti, task_id_xcom, key_xcom):
     df = pd.read_csv(filename)
     df["clean_text"] = df.apply(lambda row: clean_pdf_text(row["pdf_url"], row["id"]), axis=1)
     df["references"] = df.apply(lambda row: extract_refs_from_pdf(row["pdf_url"], row["id"]), axis=1)
+    print(df)
+    print(df['clean_text'])
+    print(df['references'])
     df = df[df['clean_text'] != '']
     filename = f"{DATAFRAMES_PATH}/arxiv_clean_text_refs.csv"
     df.to_csv(filename, index=False)
