@@ -16,7 +16,7 @@ import requests
 from bs4 import BeautifulSoup
 #import fitz
 
-GROBID_URL = "http://localhost:8070/api/processFulltextDocument"
+GROBID_URL = "http://grobid:8070/api/processFulltextDocument"
 
 # workflow test
 REQUEST_SLEEP = 2
