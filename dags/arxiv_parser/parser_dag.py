@@ -18,6 +18,12 @@ import fitz
 
 GROBID_URL = "http://grobid:8070/api/processFulltextDocument"
 
+HEADINGS = [
+    "references", "bibliography", "literature cited",
+    "works cited", "список литературы", "библиография", "references:"
+]
+PATTERN = re.compile(r"\b\d{4}\.\d{5}(?:v\d+)?\b")
+
 # workflow test
 REQUEST_SLEEP = 2
 BATCH = 20
@@ -27,6 +33,39 @@ category = "cs"
 
 date_end = datetime.today().strftime('%Y-%m-%d')
 date_start = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+
+def extract_refs_from_pdf(pdf_url, arxiv_id):
+    print(f"[{arxiv_id}] ЗоГрУзКа")
+    try:
+        pdf_bytes = requests.get(pdf_url, timeout=TIMEOUT).content
+    except Exception as e:
+        print(f"[{arxiv_id}] Не загрузился {e}")
+        return None
+
+    try:
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    except Exception as e:
+        print(f"[{arxiv_id}] Не открылся {e}")
+        return None
+
+    pages = [
+        doc.load_page(i).get_text("text") 
+        if i < doc.page_count else ""
+        for i in range(doc.page_count)
+    ]
+
+    lower = [p.lower() for p in pages]
+    start = next(
+        (i for i, p in enumerate(lower) if any(h in p for h in HEADINGS)),
+        None
+    )
+
+    text = "\n".join(pages[start:] if start is not None else pages)
+
+    matches = [re.sub(r"\s+", "", m) for m in PATTERN.findall(text)]
+    print(f"[{arxiv_id}] refs found: {len(matches)}")
+    return matches if matches else None
+
 
 def clean_pdf_text(pdf_url, arxiv_id="paper"):
     try:
@@ -141,7 +180,9 @@ def test(ti, task_id_xcom, key_xcom):
     filename = ti.xcom_pull(task_ids=task_id_xcom, key=key_xcom)
     df = pd.read_csv(filename)
     df["clean_text"] = df.apply(lambda row: clean_pdf_text(row["pdf_url"], row["id"]), axis=1)
-    filename = f"{DATAFRAMES_PATH}/arxiv_clean_text.csv"
+    df["references"] = df.apply(lambda row: extract_refs_from_pdf(row["pdf_url"], row["id"]), axis=1)
+    df = df[df['clean_text'] != '']
+    filename = f"{DATAFRAMES_PATH}/arxiv_clean_text_refs.csv"
     df.to_csv(filename, index=False)
     return filename
 
@@ -186,7 +227,7 @@ with DAG(
             "task_id_xcom": "clean_text",
             "key_xcom": "return_value",
             "table_name": "articles",
-            "update_cols": ["title", "abstract", "categories", "published", "authors", "clean_text"],
+            "update_cols": ["title", "abstract", "categories", "published", "authors", "clean_text", "references"],
             "conn_id": databaseConns["master"]["postgres_conn_id"],
             "schema_name": databaseConns["master"]["schema"],
             "index_cols": ["id"],
