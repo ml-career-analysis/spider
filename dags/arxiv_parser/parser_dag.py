@@ -163,7 +163,7 @@ def test(ti, task_id_xcom, key_xcom):
     filename = ti.xcom_pull(task_ids=task_id_xcom, key=key_xcom)
     df = pd.read_csv(filename)
     df["clean_text"] = df.apply(lambda row: clean_pdf_text(row["pdf_url"], row["id"]), axis=1)
-    df["references"] = df.apply(lambda row: extract_refs_from_pdf(row["pdf_url"], row["id"]), axis=1)
+    df["references_id"] = df.apply(lambda row: extract_refs_from_pdf(row["pdf_url"], row["id"]), axis=1)
     print(df)
     print(df['clean_text'])
     print(df['references'])
@@ -213,7 +213,7 @@ with DAG(
             "task_id_xcom": "clean_text",
             "key_xcom": "return_value",
             "table_name": "articles",
-            "update_cols": ["title", "abstract", "categories", "published", "authors", "clean_text", "references"],
+            "update_cols": ["title", "abstract", "categories", "published", "authors", "clean_text", "references_id"],
             "conn_id": databaseConns["master"]["postgres_conn_id"],
             "schema_name": databaseConns["master"]["schema"],
             "index_cols": ["id"],
