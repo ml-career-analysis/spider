@@ -130,6 +130,7 @@ def fetch_metadata(ti, category, date_start, date_end):
     df['published'] = pd.to_datetime(df['published']).dt.strftime('%Y-%m-%d %H:%M:%S')
     df = df[df['id'].notna()]
     df[df['id'].notna() & (df['id'] != '')]
+    df = df.iloc[:5]
     filename = f"{DATAFRAMES_PATH}/test.csv"
     df.to_csv(filename, index=False)
 
