@@ -3,6 +3,7 @@ import numpy as np
 from contextlib import closing
 import pandas as pd
 from datetime import datetime
+import ast
 
 def push_df_to_db(
     ti,
@@ -21,6 +22,9 @@ def push_df_to_db(
     df_check = pg.get_pandas_df(q)
     df_check['id'] = df_check['id'].astype(str)
     df['id'] = df['id'].astype(str)
+    df["references_id"] = df["references_id"].apply(
+        lambda x: ast.literal_eval(x) if isinstance(x, str) else []
+    )
     ids = df_check['id'].unique().tolist()
     df = df[~(df['id'].isin(ids))]
     records = df.to_records(index=False).tolist()
