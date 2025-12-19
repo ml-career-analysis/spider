@@ -166,7 +166,6 @@ def test(ti, task_id_xcom, key_xcom):
     df["references_id"] = df.apply(lambda row: extract_refs_from_pdf(row["pdf_url"], row["id"]), axis=1)
     print(df)
     print(df['clean_text'])
-    print(df['references'])
     df = df[df['clean_text'] != '']
     filename = f"{DATAFRAMES_PATH}/arxiv_clean_text_refs.csv"
     df.to_csv(filename, index=False)
