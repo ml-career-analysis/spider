@@ -66,7 +66,7 @@ def extract_refs_from_pdf(pdf_url, arxiv_id):
 
     matches = [re.sub(r"\s+", "", m) for m in PATTERN.findall(text)]
     print(f"[{arxiv_id}] refs found: {len(matches)}")
-    return matches if matches else None
+    return matches if matches else []
 
 
 def clean_pdf_text(pdf_url, arxiv_id="paper"):
