@@ -118,6 +118,11 @@ def fetch_metadata(ti, category, date_start, date_end):
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
 
     output = scraper.scrape()
+    url = scraper.url
+    print("ARXIV URL:", url)
+    r = requests.get(url, timeout=30)
+    print("RAW RESPONSE (first 500 chars):")
+    print(r.text[:500])
     print(output)
     df = pd.DataFrame(output)
     df = df[["id", "title", "abstract", "categories", "created", "authors"]]
