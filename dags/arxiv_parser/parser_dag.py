@@ -34,7 +34,7 @@ category = "cs"
 #date_end = '2025-11-19'
 
 date_end = datetime.today().strftime('%Y-%m-%d')
-date_start = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+date_start = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
 
 def extract_refs_from_pdf(pdf_url, arxiv_id):
     print(f"[{arxiv_id}] ЗоГрУзКа")
@@ -118,11 +118,11 @@ def fetch_metadata(ti, category, date_start, date_end):
     scraper = arxivscraper.Scraper(category=category, date_from=date_start, date_until=date_end)
 
     output = scraper.scrape()
-    url = scraper.url
-    print("ARXIV URL:", url)
-    r = requests.get(url, timeout=30)
-    print("RAW RESPONSE (first 500 chars):")
-    print(r.text[:500])
+#    url = scraper.url
+#    print("ARXIV URL:", url)
+#    r = requests.get(url, timeout=30)
+#    print("RAW RESPONSE (first 500 chars):")
+#    print(r.text[:500])
     print(output)
     df = pd.DataFrame(output)
     df = df[["id", "title", "abstract", "categories", "created", "authors"]]
