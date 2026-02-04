@@ -211,7 +211,7 @@ def process_row(idx, row):
 def process_dataframe(query):
     pg_conn = PostgresHook(postgres_conn_id = 'arxiv')
     df = pg_conn.get_pandas_df(query)
-
+    df["section_text_new"] = None
     for idx, row in df.iterrows():
         idx, sections = process_row(idx, row)
         df.at[idx, "sectioned_text"] = sections
