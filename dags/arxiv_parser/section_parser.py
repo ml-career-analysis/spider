@@ -214,7 +214,7 @@ def process_dataframe(query):
     df["section_text_new"] = None
     for idx, row in df.iterrows():
         idx, sections = process_row(idx, row)
-        df.at[idx, "pg_conn"] = sections
+        df.at[idx, "section_text_new"] = sections
     filename = f"{DATAFRAMES_PATH}/arxiv_sectioned_text.csv"
     df.drop(columns=['pdf_url'], inplace=True)
     df.to_csv(filename, index=False)
