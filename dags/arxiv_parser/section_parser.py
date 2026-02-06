@@ -29,6 +29,8 @@ def fetch_pdf(pdf_url):
     resp = requests.get(pdf_url, timeout=15)
     logging.info(f'Request')
     logging.info(f'{resp}')
+    print(resp)
+    print(resp.content)
     resp.raise_for_status()
     return resp.content
 
@@ -38,6 +40,7 @@ def pdf_to_grobid_xml(pdf_bytes, doc_id):
         "input": (f"{doc_id}.pdf", pdf_bytes, "application/pdf")
     }
     resp = requests.post(GROBID_URL, files=files, timeout=60)
+    print(resp)
     logging.info(f'GROBID')
     logging.info(f'{resp}')
     if resp.status_code != 200:
@@ -46,6 +49,7 @@ def pdf_to_grobid_xml(pdf_bytes, doc_id):
 
 
 def split_xml_into_sections(xml_text):
+    print(xml_text[:2000])
     soup = BeautifulSoup(xml_text, "lxml")
     body = soup.find("body")
     if not body:
@@ -222,7 +226,7 @@ def process_dataframe(query):
         df.at[idx, "section_text_new"] = sections
     filename = f"{DATAFRAMES_PATH}/arxiv_sectioned_text.csv"
     df.drop(columns=['pdf_url'], inplace=True)
-    df[df['section_text_new']!={}]
+    df = df[df['section_text_new']!={}]
     df.to_csv(filename, index=False)
     return filename
 
