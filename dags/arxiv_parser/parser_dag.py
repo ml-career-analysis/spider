@@ -16,6 +16,7 @@ import requests
 from bs4 import BeautifulSoup
 import fitz
 import re
+from airflow.hooks.postgres_hook import PostgresHook
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 GROBID_URL = "http://grobid:8070/api/processFulltextDocument"
 
@@ -125,7 +126,11 @@ def fetch_metadata(ti, category, date_start, date_end):
 #    print(r.text[:500])
     print(output)
     df = pd.DataFrame(output)
-    df = df.iloc[:100]
+    pg = PostgresHook(postgres_conn_id=databaseConns["master"]["postgres_conn_id"])
+    q= """select distinct id from articles"""
+    df_check = pg.get_pandas_df(q)
+    ids = df_check['id'].unique().tolist()
+    df = df[~(df['id'].isin(ids))]
     df = df[["id", "title", "abstract", "categories", "created", "authors"]]
 
     df = df.rename(columns={"created": "published"})
