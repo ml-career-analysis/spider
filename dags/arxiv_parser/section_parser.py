@@ -22,7 +22,7 @@ select
     pdf_url
 from articles a
 where a.clean_text is not null and section_text_new is null
-limit 2
+limit 1000
 """
 # пока что поставил лимит, пока сам не перелью базу в секцию иначе будет фечить все 
 
