@@ -35,18 +35,47 @@ def fetch_pdf(pdf_url):
     return resp.content
 
 
+# def pdf_to_grobid_xml(pdf_bytes, doc_id):
+#     files = {
+#         "input": (f"{doc_id}.pdf", pdf_bytes, "application/pdf")
+#     }
+#     resp = requests.post(GROBID_URL, files=files, timeout=60)
+#     print(resp)
+#     logging.info(f'GROBID')
+#     logging.info(f'{resp}')
+#     if resp.status_code != 200:
+#         raise RuntimeError(f"GROBID error {resp.status_code}")
+#     return resp.text
 def pdf_to_grobid_xml(pdf_bytes, doc_id):
-    files = {
-        "input": (f"{doc_id}.pdf", pdf_bytes, "application/pdf")
-    }
-    resp = requests.post(GROBID_URL, files=files, timeout=60)
-    print(resp)
-    logging.info(f'GROBID')
-    logging.info(f'{resp}')
-    if resp.status_code != 200:
-        raise RuntimeError(f"GROBID error {resp.status_code}")
-    return resp.text
-
+    if pdf_bytes is None:
+        return None
+    
+    try:
+        files = {
+            "input": (f"{doc_id}.pdf", pdf_bytes, "application/pdf")
+        }
+        logging.info(f"Sending PDF to Grobid: {len(pdf_bytes)} bytes")
+        
+        resp = requests.post(
+            GROBID_URL, 
+            files=files, 
+            timeout=120,
+            headers={'Accept': 'application/xml'}
+        )
+        
+        logging.info(f'Grobid response: {resp.status_code}')
+        
+        if resp.status_code != 200:
+            logging.error(f"GROBID error {resp.status_code}: {resp.text[:500]}")
+            return None
+            
+        return resp.text
+    except requests.exceptions.ConnectionError:
+        logging.error(f"Cannot connect to Grobid at {GROBID_URL}")
+        return None
+    except Exception as e:
+        logging.error(f"Error processing with Grobid: {e}")
+        return None
 
 def split_xml_into_sections(xml_text):
     print()
