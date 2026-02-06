@@ -159,6 +159,7 @@ def fetch_arxiv_metadata(ti, task_id_xcom, key_xcom, batch_size):
             time.sleep(REQUEST_SLEEP)
     print(comments)
     df_comments = pd.DataFrame({"id": list(comments.keys()), "comment": list(comments.values())})
+    print(df_comments)
     df_comments['id'] = df_comments['id'].str.replace(r'v.*$', '',regex=True)
     df = df.merge(df_comments, how='left', on='id')
 #    df['num_pages'] = df['comment'].apply(extract_num_pages)
