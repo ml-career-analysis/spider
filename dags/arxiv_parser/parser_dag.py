@@ -224,14 +224,14 @@ with DAG(
             "index_cols": ["id"],
         }
     )
-    # trigger_betting_dag = TriggerDagRunOperator(
-    #     task_id="trigger_section_processing_dag",
-    #     trigger_dag_id="sectioned_text",
-    #     wait_for_completion=False,  
-    #     poke_interval=5,  
-    #     conf={
-    #         "message": "Data from upstream DAG"
-    #     },  
-    # )
-    fetch_scraper >> fetch_arxiv >> test >> insert #>> trigger_betting_dag
+    trigger_betting_dag = TriggerDagRunOperator(
+        task_id="trigger_section_processing_dag",
+        trigger_dag_id="sectioned_text",
+        wait_for_completion=False,  
+        poke_interval=5,  
+        conf={
+            "message": "Data from upstream DAG"
+        },  
+    )
+    fetch_scraper >> fetch_arxiv >> test >> insert >> trigger_betting_dag
 
