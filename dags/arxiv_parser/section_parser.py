@@ -12,7 +12,8 @@ from bs4 import BeautifulSoup
 import re
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
-GROBID_URL = "http://localhost:8070/api/processFulltextDocument"
+
+GROBID_URL = "http://grobid:8070/api/processFulltextDocument"
 
 query="""
 select
@@ -217,6 +218,7 @@ def process_dataframe(query):
         df.at[idx, "section_text_new"] = sections
     filename = f"{DATAFRAMES_PATH}/arxiv_sectioned_text.csv"
     df.drop(columns=['pdf_url'], inplace=True)
+    df[df['section_text_new']!={}]
     df.to_csv(filename, index=False)
     return filename
 

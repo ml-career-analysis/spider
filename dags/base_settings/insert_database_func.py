@@ -17,6 +17,9 @@ def push_df_to_db(
 ):
     filename = ti.xcom_pull(task_ids=task_id_xcom, key=key_xcom)
     df = pd.read_csv(filename)
+    if df.empty:
+        logging.info("DataFrame is empty — nothing to insert/update")
+        return
     logging.info(df)
     df["id"] = df["id"].astype(str)
 
