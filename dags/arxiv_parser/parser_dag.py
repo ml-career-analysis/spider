@@ -16,7 +16,7 @@ import requests
 from bs4 import BeautifulSoup
 import fitz
 import re
-
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 GROBID_URL = "http://grobid:8070/api/processFulltextDocument"
 
 HEADINGS = [
@@ -125,6 +125,7 @@ def fetch_metadata(ti, category, date_start, date_end):
 #    print(r.text[:500])
     print(output)
     df = pd.DataFrame(output)
+    df = df.iloc[:1]
     df = df[["id", "title", "abstract", "categories", "created", "authors"]]
 
     df = df.rename(columns={"created": "published"})
@@ -223,5 +224,14 @@ with DAG(
             "index_cols": ["id"],
         }
     )
-    fetch_scraper >> fetch_arxiv >> test >> insert
+    # trigger_betting_dag = TriggerDagRunOperator(
+    #     task_id="trigger_section_processing_dag",
+    #     trigger_dag_id="sectioned_text",
+    #     wait_for_completion=False,  
+    #     poke_interval=5,  
+    #     conf={
+    #         "message": "Data from upstream DAG"
+    #     },  
+    # )
+    fetch_scraper >> fetch_arxiv >> test >> insert #>> trigger_betting_dag
 
