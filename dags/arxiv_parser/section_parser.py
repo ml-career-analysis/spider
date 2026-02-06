@@ -11,7 +11,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-
+import logging
 
 GROBID_URL = "http://grobid:8070/api/processFulltextDocument"
 
@@ -21,12 +21,14 @@ select
     pdf_url
 from articles a
 where a.clean_text is not null and section_text_new is null
-limit 10 
+limit 1
 """
 # пока что поставил лимит, пока сам не перелью базу в секцию иначе будет фечить все 
 
 def fetch_pdf(pdf_url):
     resp = requests.get(pdf_url, timeout=15)
+    logging.info(f'Request')
+    logging.info(f'{resp}')
     resp.raise_for_status()
     return resp.content
 
@@ -36,6 +38,8 @@ def pdf_to_grobid_xml(pdf_bytes, doc_id):
         "input": (f"{doc_id}.pdf", pdf_bytes, "application/pdf")
     }
     resp = requests.post(GROBID_URL, files=files, timeout=60)
+    logging.info(f'GROBID')
+    logging.info(f'{resp}')
     if resp.status_code != 200:
         raise RuntimeError(f"GROBID error {resp.status_code}")
     return resp.text
