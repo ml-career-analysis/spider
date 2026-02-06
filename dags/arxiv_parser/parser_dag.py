@@ -125,7 +125,7 @@ def fetch_metadata(ti, category, date_start, date_end):
 #    print(r.text[:500])
     print(output)
     df = pd.DataFrame(output)
-    df = df.iloc[:1]
+    df = df.iloc[:10]
     df = df[["id", "title", "abstract", "categories", "created", "authors"]]
 
     df = df.rename(columns={"created": "published"})
