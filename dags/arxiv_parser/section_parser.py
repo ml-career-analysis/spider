@@ -49,6 +49,7 @@ def pdf_to_grobid_xml(pdf_bytes, doc_id):
 
 
 def split_xml_into_sections(xml_text):
+    print()
     print(xml_text[:2000])
     soup = BeautifulSoup(xml_text, "lxml")
     body = soup.find("body")
@@ -69,6 +70,7 @@ def split_xml_into_sections(xml_text):
 
         title = lines[0]
         text = " ".join(lines[1:])
+        print(text)
         sections[title] = text
 
     return sections
@@ -207,8 +209,11 @@ def postprocess_sections(sections, min_words=30):
 def process_row(idx, row):
     try:
         pdf_bytes = fetch_pdf(row["pdf_url"])
+        print('you havce passed fetch')
+        print(pdf_bytes)
         xml_text = pdf_to_grobid_xml(pdf_bytes, row["id"])
-
+        print('you have passed grobid')
+        print(xml_text)
         sections = split_xml_into_sections(xml_text)
         sections = trim_sections_after_conclusion(sections)
         sections = postprocess_sections(sections, min_words=40)
