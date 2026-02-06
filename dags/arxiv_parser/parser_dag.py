@@ -157,6 +157,7 @@ def fetch_arxiv_metadata(ti, task_id_xcom, key_xcom, batch_size):
                 comments[id] = article.comment
         except arxiv.HTTPError as e:
             time.sleep(REQUEST_SLEEP)
+    print(comments)
     df_comments = pd.DataFrame({"id": list(comments.keys()), "comment": list(comments.values())})
     df_comments['id'] = df_comments['id'].str.replace(r'v.*$', '',regex=True)
     df = df.merge(df_comments, how='left', on='id')
