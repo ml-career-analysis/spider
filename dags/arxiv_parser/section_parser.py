@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 import re
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 import logging
+import json
 
 GROBID_URL = "http://grobid:8070/api/processFulltextDocument"
 
@@ -21,7 +22,7 @@ select
     pdf_url
 from articles a
 where a.clean_text is not null and section_text_new is null
-limit 10
+limit 2
 """
 # пока что поставил лимит, пока сам не перелью базу в секцию иначе будет фечить все 
 
@@ -45,8 +46,7 @@ def pdf_to_grobid_xml(pdf_bytes, doc_id):
 
 
 def split_xml_into_sections(xml_text):
-    print()
-    print(xml_text[:2000])
+
     soup = BeautifulSoup(xml_text, "lxml")
     body = soup.find("body")
     if not body:
@@ -205,11 +205,7 @@ def postprocess_sections(sections, min_words=30):
 def process_row(idx, row):
     try:
         pdf_bytes = fetch_pdf(row["pdf_url"])
-        print('you havce passed fetch')
-        print(pdf_bytes)
         xml_text = pdf_to_grobid_xml(pdf_bytes, row["id"])
-        print('you have passed grobid')
-        print(xml_text)
         sections = split_xml_into_sections(xml_text)
         sections = trim_sections_after_conclusion(sections)
         sections = postprocess_sections(sections, min_words=40)
@@ -228,6 +224,9 @@ def process_dataframe(query):
     filename = f"{DATAFRAMES_PATH}/arxiv_sectioned_text.csv"
     df.drop(columns=['pdf_url'], inplace=True)
     df = df[df['section_text_new']!={}]
+    df["section_text_new"] = df["section_text_new"].apply(
+        lambda x: json.dumps(x, ensure_ascii=False) if isinstance(x, dict) else None
+    )
     df.to_csv(filename, index=False)
     return filename
 
