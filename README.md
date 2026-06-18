@@ -134,14 +134,6 @@ docker compose build
 
 ---
 
-## Инициализация Airflow
-
-```bash
-docker compose up airflow-init
-```
-
----
-
 ## Запуск сервисов
 
 ```bash
